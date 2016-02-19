@@ -30,14 +30,14 @@ end
 % --- Executes just before muse_plot is made visible.
 function muse_plot_OpeningFcn(hObject, ~, handles, ~)
 tic ;
-try
-    parpool('local',2);
-catch
-    delete(gcp('nocreate'));
-    parpool('local',2);
-end
-p = gcp();
-parfeval(p, @ServerParser, 0)
+% try
+%     parpool('local',2);
+% catch
+%     delete(gcp('nocreate'));
+%     parpool('local',2);
+% end
+% p = gcp();
+% parfeval(p, @ServerParser, 0)
 
 % Choose default command line output for muse_plot
 handles.output = hObject;
@@ -96,7 +96,7 @@ handles.classind = 1;
 
 % Plotting
 %EEG
-handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
+% handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
 % handles.EEGPlot     = plot(handles.EEGAxes  ,mean(handles.EEGbuffer,1));
 % set(handles.EEGAxes    ,'Xtick',[],'Ytick',[]);
 % set(handles.EEGAxes    ,'XLim',[0 handles.nsec*handles.EEG_sample_freq]);
@@ -151,12 +151,6 @@ handles.ice_timer = timer(...
 disp 'Initialized';
 toc
 guidata(hObject,handles);
-start_timers(hObject);
-
-function start_timers(hObject)
-
-handles = guidata(hObject);
-
 while (strcmp(get(handles.read_timer, 'Running'), 'off')|| ...
        strcmp(get(handles.plot_timer, 'Running'), 'off'))
     try        
@@ -347,7 +341,7 @@ catch
 end 
 guidata(hObject,handles);
  
-% --- Relax time
+%shows the inducation signal and exit
 function relax_callback(~,~,hfigure)
 handles = guidata(hfigure);
 
@@ -378,7 +372,7 @@ handles.prompt2 = text(500, 200,'and remove it when unbearable.','backgroundcolo
 guidata(hfigure,handles) %save the reset features
 start(handles.ice_timer);
 
-% --- Ice time
+%disables the induction signal, calculates the mean values exits
 function ice_callback(~,~,hfigure)
 handles = guidata(hfigure);
 
@@ -387,6 +381,7 @@ disp 'Calibration data collected, training ...'
 handles.pushbutton8.Visible = 'On';
  
 guidata(hfigure,handles);
+
 
 % --- Executes on button press Hand removed
 function pushbutton8_Callback(hObject, ~, handles) %#ok<DEFNU>
@@ -470,7 +465,12 @@ handles.horseshoe = zeros(4,1);
 handles.labels = 0;
 handles.classind = 1;
 
-% handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
+handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
+handles.alphabuffer = zeros(4,handles.nsec*handles.bndpwr_freq);
+handles.betabuffer  = zeros(4,handles.nsec*handles.bndpwr_freq);
+handles.gammabuffer = zeros(4,handles.nsec*handles.bndpwr_freq);
+handles.deltabuffer = zeros(4,handles.nsec*handles.bndpwr_freq);
+handles.thetabuffer = zeros(4,handles.nsec*handles.bndpwr_freq);
 
 guidata(hObject,handles) 
 
