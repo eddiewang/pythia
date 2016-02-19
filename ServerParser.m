@@ -1,5 +1,6 @@
 function ServerParser (server)
 
+addpath('osc-mexmaci64');
 %The server will listen to all incoming osc 
 %filters it and stores in a mat file, withing the variable data
 disp ('Staring Server')
