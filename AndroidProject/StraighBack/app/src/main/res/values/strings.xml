@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Straight Back</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button1">Action?</string>
+    <string name="action_three">Tech screen</string>
+    <string name="action_two">Exit</string>
+</resources>
