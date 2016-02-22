@@ -27,27 +27,26 @@ end
 % Label data
 tic;
 f.label = cell(size(f.alpha,2),1);
-%figure
-%%%                        | <- MARK
-%%                                 | <- show think up
-%%                  ------><random><---t---><---t--->
-%%                      UNKOWNN      NoPain   Pain
-%# vertical line
-                                        
-END=f.alpha_t(end);
+                    
 
 for t=1:size(f.alpha,2)
-    if (f.alpha_t(t)<f.alpha_t(end)-2*f.markers_t)
+    
+
+
+    if f.alpha_t(t) <= f.markers_t - 12
         f.label{t} = 'unknown';
-    end
-    if (f.alpha_t(t)>=f.alpha_t(end)-2*f.markers_t)        
+    elseif f.alpha_t(t) <= f.markers_t - 2
         f.label{t} = 'no pain';
-    end
-    if (f.alpha_t(t)>=f.alpha_t(end)-f.markers_t)
+    elseif f.alpha_t(t) <= f.alpha_t(end)-12
+        f.label{t} = 'unknown';
+    elseif f.alpha_t(t) <= f.alpha_t(end)-2
         f.label{t} = 'pain';
+    else
+        f.label{t} = 'unknown';
     end
 end
 
+save('ffff')
 
 hold on;
 

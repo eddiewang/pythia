@@ -93,6 +93,7 @@ handles.max_freq_len = handles.bndpwr_freq * 100;
 
 
 handles.classind = 1;
+handles.trained = 0;
 
 % Plotting
 %EEG
@@ -112,9 +113,7 @@ handles.labelbuffer = zeros(1,handles.nsec*handles.bndpwr_freq);
 % Time:     ------><------------><--------------------->
 % Vars:    UNKOWNN   relax_time        ice_time
 % Stat:   
-handles.relax_time = 5 ; % set to 20
-handles.collect_time = 10;
-handles.nUp_data = handles.bndpwr_freq * handles.collect_time;
+handles.relax_time = 20 ; % set to 20
 
 %----------%
 %- Timers -%
@@ -145,7 +144,8 @@ handles.relax_timer = timer(...
 % Hand in ice state, wait until button pressed
 handles.ice_timer = timer(...
     'ExecutionMode', 'singleShot'    , ...
-    'BusyMode'     , 'queue'        , ...                             
+    'BusyMode'     , 'queue'        , ...  
+    'StartDelay'    , 8, ...    
     'TimerFcn', {@ice_callback,hObject}); %Passing hObject as data
 
 disp 'Initialized';
@@ -258,8 +258,9 @@ if (length(handles.alpha)~=length(handles.beta))||...
    disp('Data Lengths are not the same')
 end
 
-for n = 1:size(handles.alpha,2)-size(handles.labels,2)            
+for n = 1:size(handles.alpha,2)-size(handles.labels,2)
     strlabel = label_state(handles,n);
+
     if strcmp(strlabel,'pain')
         label = 1;
     else
@@ -304,11 +305,8 @@ try
     
 %     set(handles.EEGPlot,'YData',handles.EEGbuffer);
 
-%     if strcmp(get(handles.delay_train, 'Running'), 'off')
-%         if strcmp(get(handles.delay_train2, 'Running'), 'off')
-%             set(handles.statetxt  ,'String',handles.labelbuffer(end));
-%         end
-%     end
+    set(handles.statetxt  ,'String',handles.labelbuffer(end));
+
     
 catch exception
     disp('Error in updating the plot')
@@ -318,7 +316,6 @@ end
 % --- Executes on button press in Start Streaming.
 function pushStartButton_Callback(hObject , ~, handles)   %#ok<DEFNU>
 
-display(hObject.Visible)
 
 set(hObject,'Units','Pixels');
 disp 'Started Calibration'
@@ -337,6 +334,7 @@ hObject.Visible = 'Off';
 pos = get(hObject,'Position');
 set(hObject, 'Position',[pos(1) 44 pos(3) pos(4)],'String','Repeat Calibration','HorizontalAlignment','center');
 set(handles.sensors,'Position',[3.142 1.667 21.571 1.6]);
+handles = reset_data(handles);
 
 try
     if strcmp(get(handles.relax_timer, 'Running'), 'off')
@@ -408,7 +406,8 @@ handles.prompt = text(500, 300,'Calibrating ...','backgroundcolor','none', ...
                     'color','white', ...
                     'HorizontalAlignment','center');
 
-% handles = train_knn_classifier(handles);
+handles = train_knn_classifier(handles);
+
 
 handles.prompt.Visible = 'off';
 
@@ -427,18 +426,18 @@ f = struct('alpha', handles.alpha, ...
            'theta', handles.theta, ...
            'gamma', handles.gamma, ...
        'horseshoe', handles.horseshoe, ...
-       'markers_t',handles.up_duration,...
+       'markers_t', handles.relax_time,...
         'alpha_t',(1:length(handles.alpha))/handles.bndpwr_freq);
-    
+ display(f.alpha_t)
 handles.kNNClassifier = train_kNNClassifier2(f,'verbose'); 
- 
+
+handles.trained = 1;
 new_handles=handles;
-return 
 
 
 function label=label_state(handles,index)
 try
-    if exist('handles.kNNClassifier','var')
+    if handles.trained == 1
         f = zscore([handles.alpha(3,index) ; ...
                     handles.beta(1:2,index)  ; ...
                     handles.gamma(1:3,index) ; ...
@@ -453,12 +452,8 @@ catch exception
     fprintf('Value handles.classind %i\n',handles.index);
 end
  
-
 % --- RESETS data
-function pushbutton2_Callback(hObject, ~, handles) %#ok<DEFNU>
-% hObject    handle to pushbutton2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function new_handles = reset_data(handles)
 
 handles.EEG     = zeros(4,1);
 handles.alpha   = zeros(4,1);
@@ -470,21 +465,8 @@ handles.horseshoe = zeros(4,1);
 handles.labels = 0;
 handles.classind = 1;
 
+new_handles = handles;
 % handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
-
-guidata(hObject,handles) 
-
-
-% --- SAVES DATA to DISK
-function pushbutton6_Callback(~, ~, handles) %#ok<INUSD,DEFNU>
-% hObject    handle to pushbutton6 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-warning('off','all');
-file_name_store_data=strcat('BioFeedbackExperiment',datestr(now,'yyyymmdd-HHMMSS'));
-save(file_name_store_data,'handles'); 
-movefile(strcat(file_name_store_data,'.mat'),'saved_experiments')
-warning('on','all');
 
 % --- Executes when user attempts to close figure1.
 function figure1_CloseRequestFcn(hObject, ~, handles)  %#ok<DEFNU>
