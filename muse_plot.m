@@ -92,7 +92,6 @@ handles.max_EEG_len  = handles.EEG_sample_freq * 100;
 handles.max_freq_len = handles.bndpwr_freq * 100;
 
 
-handles.classind = 1;
 handles.trained = 0;
 
 % Plotting
@@ -102,7 +101,7 @@ handles.trained = 0;
 % set(handles.EEGAxes    ,'Xtick',[],'Ytick',[]);
 % set(handles.EEGAxes    ,'XLim',[0 handles.nsec*handles.EEG_sample_freq]);
 
-handles.labelbuffer = zeros(1,handles.nsec*handles.bndpwr_freq);
+handles.labelbuffer = zeros(1,10);
 
 %--------------------%
 %- Training Timings -%
@@ -266,8 +265,9 @@ for n = 1:size(handles.alpha,2)-size(handles.labels,2)
     else
         label=0;
     end
-    handles.labels = [handles.labels label];
+%     handles.labels = [handles.labels label];
     handles.labelbuffer = [handles.labelbuffer(:,2:end) label];
+    
     handles.classind = handles.classind + 1;    
 end
 
@@ -297,15 +297,20 @@ function update_plot(~,~,hfigure)
 handles = guidata(hfigure);
  
 try
+    display(handles.horseshoe(1,1))
     % Update connection indicators
     set(handles.sensors,'String', sprintf('Sensors: %i %i %i %i',handles.horseshoe(1,1),handles.horseshoe(2,1),handles.horseshoe(3,1),handles.horseshoe(4,1)));
     
     % Update datestring
     set(handles.text27,'String',datestr(now, 'HH:MM:SS')); 
     
-%     set(handles.EEGPlot,'YData',handles.EEGbuffer);
-
-    set(handles.statetxt,'String',handles.labelbuffer(end));
+    % set(handles.EEGPlot,'YData',handles.EEGbuffer);
+    if (histc(handles.labelbuffer,0) > histc(handles.labelbuffer,1))  
+        set(handles.statetxt,'String','no pain');
+    else
+        set(handles.statetxt,'String','pain');
+    end
+%     display(handles.labelbuffer)
 
     
 catch exception
@@ -316,9 +321,11 @@ end
 % --- Executes on button press in Start Streaming.
 function pushStartButton_Callback(hObject , ~, handles)   %#ok<DEFNU>
 
-
 set(hObject,'Units','Pixels');
 disp 'Started Calibration'
+
+handles = reset_data(handles);
+
 
 handles.prompt = text(500,460,'Relax...','backgroundcolor','none', ...
             'Units','pixels', ...
@@ -334,7 +341,6 @@ hObject.Visible = 'Off';
 pos = get(hObject,'Position');
 set(hObject, 'Position',[pos(1) 44 pos(3) pos(4)],'String','Repeat Calibration','HorizontalAlignment','center');
 set(handles.sensors,'Position',[3.142 1.667 21.571 1.6]);
-handles = reset_data(handles);
 
 try
     if strcmp(get(handles.relax_timer, 'Running'), 'off')
@@ -408,6 +414,7 @@ handles.prompt = text(500, 300,'Calibrating ...','backgroundcolor','none', ...
 
 handles = train_knn_classifier(handles);
 
+handles.trained = 1;
 
 handles.prompt.Visible = 'off';
 
@@ -433,7 +440,6 @@ handles.kNNClassifier = train_kNNClassifier2(f,'verbose');
 
 handles.trained = 1;
 new_handles=handles;
-
 
 function label=label_state(handles,index)
 try
@@ -462,8 +468,8 @@ handles.gamma   = zeros(4,1);
 handles.delta   = zeros(4,1);
 handles.theta   = zeros(4,1);
 handles.horseshoe = zeros(4,1);
-handles.labels = 0;
-handles.classind = 1;
+% handles.labels = 0;
+handles.trained = 0;
 
 new_handles = handles;
 % handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);

@@ -31,8 +31,6 @@ f.label = cell(size(f.alpha,2),1);
 
 for t=1:size(f.alpha,2)
     
-
-
     if f.alpha_t(t) <= f.markers_t - 12
         f.label{t} = 'unknown';
     elseif f.alpha_t(t) <= f.markers_t - 2
@@ -84,7 +82,7 @@ if verbose
     fprintf('Classifier trained in %f sec. -- Cval = %f\n',et,cvalAccu)
 end
 
-%save('kNNClassifier','kNNClassifier');
+save('kNNClassifier','kNNClassifier');
 
 end % Function
 
