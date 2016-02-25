@@ -5,6 +5,10 @@ __pycache__/
 # C extensions
 *.so
 
+# extra
+muse_plot.fig
+*.mat
+
 # Distribution / packaging
 .Python
 env/
