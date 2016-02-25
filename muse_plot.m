@@ -86,6 +86,7 @@ handles.delta = zeros(4,1);
 handles.theta = zeros(4,1);
 handles.horseshoe = zeros(4,1);
 handles.labels = 0;
+handles.classind = 0;
 
 %Storage Parameters
 handles.max_EEG_len  = handles.EEG_sample_freq * 100;
@@ -183,7 +184,6 @@ varargout{1} = handles.output;
 
 function read_data(~,~,hfigure)
 % Callback function for read_timer
-
 handles = guidata(hfigure);
 try
     if (exist(handles.server_buff,'file'))
@@ -297,7 +297,6 @@ function update_plot(~,~,hfigure)
 handles = guidata(hfigure);
  
 try
-    display(handles.horseshoe(1,1))
     % Update connection indicators
     set(handles.sensors,'String', sprintf('Sensors: %i %i %i %i',handles.horseshoe(1,1),handles.horseshoe(2,1),handles.horseshoe(3,1),handles.horseshoe(4,1)));
     
@@ -470,6 +469,7 @@ handles.theta   = zeros(4,1);
 handles.horseshoe = zeros(4,1);
 % handles.labels = 0;
 handles.trained = 0;
+handles.classind = 0;
 
 new_handles = handles;
 % handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
