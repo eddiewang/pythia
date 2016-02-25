@@ -56,7 +56,7 @@ set(handles.axes_cover,'handlevisibility','off','visible','off')
 % set axes_cover behind all the other uicontrols
 uistack(handles.axes_cover, 'bottom');
 
-handles.title = text(500,550,'PYTHIA v0.8','backgroundcolor','none', ...
+handles.title = text(500,550,'MIT CBA EEG Demo v0.1','backgroundcolor','none', ...
                     'Units','pixels', ...
                     'parent',handles.axes_cover, ...
                     'FontSize',60, ...
@@ -97,7 +97,7 @@ handles.trained = 0;
 
 % Plotting
 %EEG
-handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
+% handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
 % handles.EEGPlot     = plot(handles.EEGAxes  ,mean(handles.EEGbuffer,1));
 % set(handles.EEGAxes    ,'Xtick',[],'Ytick',[]);
 % set(handles.EEGAxes    ,'XLim',[0 handles.nsec*handles.EEG_sample_freq]);
@@ -210,7 +210,7 @@ for j=1:size(data,2)  %#ok<USENS>
                    data{j}.data{3}; ...
                    data{j}.data{4}]; 
             handles.EEG = [handles.EEG values];   
-            handles.EEGbuffer = [handles.EEGbuffer(:,2:end) values];
+%             handles.EEGbuffer = [handles.EEGbuffer(:,2:end) values];
         case '/DELTA_ABSOLUTE'
             values = [data{j}.data{1}; ...
                    data{j}.data{2}; ...
@@ -282,7 +282,7 @@ if length(handles.alpha)>handles.max_freq_len
 end
 
 if length(handles.labels)>handles.max_freq_len
-    handles.labels= handles.labels (:,end-handles.max_freq_len:end);
+    handles.labels=handles.labels (:,end-handles.max_freq_len:end);
 end
 
 if length(handles.EEG)>handles.max_EEG_len
@@ -305,7 +305,7 @@ try
     
 %     set(handles.EEGPlot,'YData',handles.EEGbuffer);
 
-    set(handles.statetxt  ,'String',handles.labelbuffer(end));
+    set(handles.statetxt,'String',handles.labelbuffer(end));
 
     
 catch exception
