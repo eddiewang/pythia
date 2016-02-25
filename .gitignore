@@ -6,7 +6,7 @@ __pycache__/
 *.so
 
 # extra
-muse_plot.fig
+*.fig
 *.mat
 
 # Distribution / packaging
