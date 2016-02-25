@@ -184,6 +184,7 @@ varargout{1} = handles.output;
 
 function read_data(~,~,hfigure)
 % Callback function for read_timer
+
 handles = guidata(hfigure);
 try
     if (exist(handles.server_buff,'file'))
@@ -265,7 +266,7 @@ for n = 1:size(handles.alpha,2)-size(handles.labels,2)
     else
         label=0;
     end
-%     handles.labels = [handles.labels label];
+    handles.labels = [handles.labels label];
     handles.labelbuffer = [handles.labelbuffer(:,2:end) label];
     
     handles.classind = handles.classind + 1;    
@@ -309,9 +310,8 @@ try
     else
         set(handles.statetxt,'String','pain');
     end
-%     display(handles.labelbuffer)
 
-    
+    display(handles.labelbuffer)
 catch exception
     disp('Error in updating the plot')
     getReport(exception)
@@ -434,7 +434,6 @@ f = struct('alpha', handles.alpha, ...
        'horseshoe', handles.horseshoe, ...
        'markers_t', handles.relax_time,...
         'alpha_t',(1:length(handles.alpha))/handles.bndpwr_freq);
- display(f.alpha_t)
 handles.kNNClassifier = train_kNNClassifier2(f,'verbose'); 
 
 handles.trained = 1;
@@ -467,7 +466,7 @@ handles.gamma   = zeros(4,1);
 handles.delta   = zeros(4,1);
 handles.theta   = zeros(4,1);
 handles.horseshoe = zeros(4,1);
-% handles.labels = 0;
+handles.labels = 0;
 handles.trained = 0;
 handles.classind = 0;
 
