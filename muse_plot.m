@@ -102,7 +102,7 @@ handles.trained = 0;
 % set(handles.EEGAxes    ,'Xtick',[],'Ytick',[]);
 % set(handles.EEGAxes    ,'XLim',[0 handles.nsec*handles.EEG_sample_freq]);
 
-handles.labelbuffer = zeros(1,10);
+handles.labelbuffer = ones(1,50);
 
 %--------------------%
 %- Training Timings -%
@@ -113,7 +113,7 @@ handles.labelbuffer = zeros(1,10);
 % Time:     ------><------------><--------------------->
 % Vars:    UNKOWNN   relax_time        ice_time
 % Stat:   
-handles.relax_time = 20 ; % set to 20
+handles.relax_time = 30 ; % set to 20
 
 %----------%
 %- Timers -%
@@ -145,7 +145,7 @@ handles.relax_timer = timer(...
 handles.ice_timer = timer(...
     'ExecutionMode', 'singleShot'    , ...
     'BusyMode'     , 'queue'        , ...  
-    'StartDelay'    , 8, ...    
+    'StartDelay'   , 8, ...    
     'TimerFcn', {@ice_callback,hObject}); %Passing hObject as data
 
 disp 'Initialized';
@@ -311,7 +311,7 @@ try
         set(handles.statetxt,'String','pain');
     end
 
-    display(handles.labelbuffer)
+%     display(handles.labelbuffer)
 catch exception
     disp('Error in updating the plot')
     getReport(exception)
@@ -324,7 +324,6 @@ set(hObject,'Units','Pixels');
 disp 'Started Calibration'
 
 handles = reset_data(handles);
-
 
 handles.prompt = text(500,460,'Relax...','backgroundcolor','none', ...
             'Units','pixels', ...
@@ -469,6 +468,7 @@ handles.horseshoe = zeros(4,1);
 handles.labels = 0;
 handles.trained = 0;
 handles.classind = 0;
+handles.labelbuffer = ones(1,50);
 
 new_handles = handles;
 % handles.EEGbuffer   = zeros(4,handles.nsec*handles.EEG_sample_freq);
