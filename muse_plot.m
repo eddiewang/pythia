@@ -258,18 +258,21 @@ if (length(handles.alpha)~=length(handles.beta))||...
    disp('Data Lengths are not the same')
 end
 
-for n = 1:size(handles.alpha,2)-size(handles.labels,2)
-    strlabel = label_state(handles,n);
+if handles.trained == 1
+%     for n = 1:size(handles.alpha,2)-size(handles.labels,2)
+%         strlabel = label_state(handles,n);
+        strlabel = label_state(handles,size(handles.alpha,2));
 
-    if strcmp(strlabel,'pain')
-        label = 1;
-    else
-        label=0;
-    end
-    handles.labels = [handles.labels label];
-    handles.labelbuffer = [handles.labelbuffer(:,2:end) label];
-    
-    handles.classind = handles.classind + 1;    
+        if strcmp(strlabel,'pain')
+            label = 1;
+        else
+            label=0;
+        end
+%         handles.labels = [handles.labels label];
+        handles.labelbuffer = [handles.labelbuffer(:,2:end) label];
+
+        handles.classind = handles.classind + 1;    
+%     end
 end
 
 %discard unecessary data
@@ -304,14 +307,13 @@ try
     % Update datestring
     set(handles.text27,'String',datestr(now, 'HH:MM:SS')); 
     
-    % set(handles.EEGPlot,'YData',handles.EEGbuffer);
     if (histc(handles.labelbuffer,0) > histc(handles.labelbuffer,1))  
         set(handles.statetxt,'String','no pain');
     else
         set(handles.statetxt,'String','pain');
     end
 
-%     display(handles.labelbuffer)
+    display(handles.labelbuffer)
 catch exception
     disp('Error in updating the plot')
     getReport(exception)

@@ -46,7 +46,6 @@ end
 
 save('ffff')
 
-hold on;
 
 if verbose
     et = toc;    
