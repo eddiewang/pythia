@@ -301,6 +301,7 @@ function update_plot(~,~,hfigure)
 handles = guidata(hfigure);
  
 try
+    display(handles.horseshoe)
     % Update connection indicators
     set(handles.sensors,'String', sprintf('Sensors: %i %i %i %i',handles.horseshoe(1,1),handles.horseshoe(2,1),handles.horseshoe(3,1),handles.horseshoe(4,1)));
     
@@ -313,7 +314,7 @@ try
         set(handles.statetxt,'String','pain');
     end
 
-    display(handles.labelbuffer)
+%     display(handles.labelbuffer)
 catch exception
     disp('Error in updating the plot')
     getReport(exception)
